@@ -27,8 +27,7 @@ class MpdfController extends Controller{
 		*/
     }
 
-	public function doCreate(){
-		// curl -u "{username}":"{password}" -H "Content-Type: application/json" -d "{\"text\": \"Hi Team, I know the times are difficult! Our sales have been disappointing for the past three quarters for our data analytics product suite. We have a competitive data analytics product suite in the industry. But we need to do our job selling it! \"}" "https://gateway.watsonplatform.net/tone-analyzer/api/v3/tone?version=2016-05-19&tones=emotion"
+	public function doCreate(){ 
     try{
         $response = array(
           'success' => false,
