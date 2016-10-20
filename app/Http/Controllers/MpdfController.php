@@ -30,13 +30,14 @@ class MpdfController extends Controller{
 	public function doCreate(){ 
     try{
         $response = array(
+          'face' => [],
           'success' => false,
           'error' => array('code' => '', 'msg' => '')
         );
 
         $curl = curl_init();
   
-        $subscriptionKey = '';
+        $subscriptionKey = env('FACE_API_KEY', 'KEY');
 
         $headers = array(
           // Request headers
@@ -45,28 +46,31 @@ class MpdfController extends Controller{
         );
 
         $url = "https://api.projectoxford.ai/face/v1.0/detect";
+        $imageUrl = "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/6/005/092/3ce/32b77f2.jpg";
+        $post = [
+          'returnFaceId' => true,
+          'returnFaceLandmarks' => true,
+          'returnFaceAttributes' => 'age,gender,headPose,smile,facialHair,glasses',
+        ];
 
         // Set request options 
-        curl_setopt_array($curl, array( CURLOPT_URL => $url,
+        curl_setopt_array($curl, array( 
+          CURLOPT_URL => $url,
           CURLOPT_POST => TRUE,
           CURLOPT_HTTPHEADER => $headers,
           CURLOPT_ENCODING => "UTF-8",
-          CURLOPT_POSTFIELDS => http_build_query(
-            array(
-              'text' => "Hi Team, I know the times are difficult! Our sales have been disappointing for the past three quarters for our data analytics product suite. We have a competitive data analytics product suite in the industry. But we need to do our job selling it!"
-            )),
+          CURLOPT_POSTFIELDS => $post,
           CURLOPT_RETURNTRANSFER => TRUE
         ));
 
         // Execute request and get response and status code
         $responsePaypal = curl_exec($curl);
         $statusConnetion  = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-
-        Log::info('WATSON::INFO', array('RESPONSE' => $responsePaypal));    
+ 
         curl_close($curl);
 
-
+        $response['face'] = $responsePaypal;
+        
         $response['success'] = true;
 
     } catch (Exception $e) {
