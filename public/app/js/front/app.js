@@ -17,7 +17,7 @@ app.config(function($stateProvider, $urlRouterProvider, $validatorProvider, $int
   $interpolateProvider.endSymbol('}}');
   // 
   // For any unmatched url, redirect to /state1 
-  $urlRouterProvider.otherwise("/");
+  $urlRouterProvider.otherwise("/file");
   // 
   // Now set up the states 
   $stateProvider  

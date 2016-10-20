@@ -30,7 +30,10 @@ class MpdfController extends Controller{
 	public function doCreate(){ 
     try{
         $response = array(
-          'face' => [], 
+          'content' => [], 
+          'err' => [], 
+          'errmsg' => [], 
+          'status' => [], 
           'success' => false,
           'error' => array('code' => '', 'msg' => '')
         );
@@ -51,25 +54,36 @@ class MpdfController extends Controller{
           'url' => "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/6/005/092/3ce/32b77f2.jpg"
         );
 
-        $data_string = json_encode($data);
-
-        // Set request options 
-        curl_setopt_array($curl, array( 
+        /*
+        $options = array( 
           CURLOPT_URL => $url,
           CURLOPT_POST => TRUE,
           CURLOPT_HTTPHEADER => $headers,
           CURLOPT_ENCODING => "UTF-8",
           CURLOPT_POSTFIELDS => $data_string,
           CURLOPT_RETURNTRANSFER => TRUE
-        ));
+        );
+        */
+        curl_setopt($curl, CURLOPT_URL, $url); 
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers); 
+        curl_setopt($curl, CURLOPT_POST, true); 
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data)); 
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); 
+        // Set request options 
+        // curl_setopt_array($curl, $options);
 
         // Execute request and get response and status code 
-        $responsePaypal = curl_exec($curl);
+        $content = curl_exec($curl);
+        $err = curl_errno($ch); 
+        $errmsg = curl_error($ch) ;
         $statusConnetion  = curl_getinfo($curl, CURLINFO_HTTP_CODE);
  
         curl_close($curl);
 
-        $response['face'] = $responsePaypal;
+        $response['content'] = $content ;
+        $response['err'] = $err;
+        $response['errmsg'] = $errmsg;
+        $response['status'] = $statusConnetion;
 
         $response['success'] = true;
 
