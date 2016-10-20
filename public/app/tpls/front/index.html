@@ -1,43 +1,5 @@
-<!--
 <div class="row">
-    <div class="col-xs-12 col-md-6">
-    	<input type="file" nv-file-select uploader="uploader"/><br/>
-        <ul>
-            <li ng-repeat="item in uploader.queue">
-                Name: <span ng-bind="item.file.name"></span><br/>
-                <button ng-click="item.upload()">upload</button>
-            </li>
-        </ul>
-    </div>
-</div>
--->
-
-<div class="row">
-    <div class="col-xs-12 col-md-6">
-
-        <!-- 
-        <div ng-show="uploader.isHTML5">
-            -- 3. nv-file-over uploader="link" over-class="className"
-            <div class="well my-drop-zone" nv-file-over="" uploader="uploader">
-                Base drop zone
-            </div>
-
-            -- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" 
-            <div nv-file-drop="" uploader="uploader" options="{ url: '/foo' }">
-                <div nv-file-over="" uploader="uploader" over-class="another-file-over-class" class="well my-drop-zone">
-                    Another drop zone with its own settings
-                </div>
-            </div>
-        </div>
-        -->
-
-        <!-- 
-        Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" 
-        <div class="form-group">
-            <label class="control-label" for="file">Multiple</label>
-            <input type="file" nv-file-select="" uploader="uploader" id="file" multiple/>
-        </div>
-        -->
+    <div class="col-xs-12 col-md-6"> 
         <form name="formName"> 
            <div class="form-group"> 
                 <label>Ui-Validate</label>
@@ -99,7 +61,7 @@
                         <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
                             <span class="glyphicon glyphicon-ban-circle"></span> Cancel
                         </button>
-                        <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                        <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
                             <span class="glyphicon glyphicon-trash"></span> Remove
                         </button>
                     </td>

@@ -14,43 +14,7 @@
 angular.module('load.mainControllers', [])
 
 .controller('MainCtrl', ['$scope', '$location', '$rootScope', '$timeout', '$log', 'uiUploader', 'MainSrvc', 'FileUploader', function($scope, $location, $rootScope, $timeout, $log, uiUploader, MainSrvc, FileUploader){
-	/*
-	$scope.btn_remove = function(file) {
-	    $log.info('deleting=' + file);
-	    uiUploader.removeFile(file);
-	};
-               	
-   	$scope.btn_clean = function() {
-        uiUploader.removeAll();
-    };
-
-    $scope.btn_upload = function() {
-        $log.info('uploading...');
-        uiUploader.startUpload({
-            url: 'https://posttestserver.com/post.php',
-            concurrency: 2,
-            onProgress: function(file) {
-                $log.info(file.name + '=' + file.humanSize);
-                $scope.$apply();
-            },
-            onCompleted: function(file, response) {
-                $log.info(file + 'response' + response);
-            }
-        });
-    };
-
-    $scope.files = [];
-
-    var element = document.getElementById('file1');
-
-    element.addEventListener('change', function(e) {
-        var files = e.target.files;
-        uiUploader.addFiles(files);
-        $scope.files = uiUploader.getFiles();
-        $scope.$apply();
-    });
-    */
-
+	
     $scope.validationOptions = {
         rules: {
             email: {
@@ -61,17 +25,7 @@ angular.module('load.mainControllers', [])
                 required: true,
                 minlength: 6
             }
-        }/*,
-        messages: {
-            email: {
-                required: "We need your email address to contact you",
-                email: "Your email address must be in the format of name@domain.com"
-            },
-            password: {
-                required: "You must enter a password",
-                minlength: "Your password must have a minimum length of 6 characters"
-            }
-        }*/
+        }
     }
 
     $scope.register = function (form) {
@@ -90,8 +44,8 @@ angular.module('load.mainControllers', [])
     console.log('csrf_token', csrf_token);
 
     var uploader = $scope.uploader = new FileUploader({
-        url: 'http://dev.mpdf.com/api/v1/excel/load',
-        alias: 'fileNews', // {String} ​​: Nombre del campo que contendrá el archivo, por defecto esfile
+        url: 'https://appmpdf.herokuapp.com/api/v1/face/detect',
+        alias: 'phone', // {String} ​​: Nombre del campo que contendrá el archivo, por defecto esfile
         autoUpload: false, // {Boolean} : cargar automáticamente archivos después de añadirlos a la cola
         removeAfterUpload: false, // {Boolean} : permiten CORS. Sólo los navegadores HTML5.
         method: 'POST', // {String} : Es un método de petición. De manera predeterminada POST. Sólo los navegadores HTML5.
@@ -103,18 +57,35 @@ angular.module('load.mainControllers', [])
 
     // FILTERS 
     uploader.filters.push({ 
-        name: 'excelFilter',
+        name: 'imageFilter',
         fn: function(item, options) {
             var type = '|' + item.name.slice(item.name.lastIndexOf('.') + 1) + '|';
-            return '|xls|xlsx|'.indexOf(type) !== -1;
+            return '|jpg|jpge|png|'.indexOf(type) !== -1;
         } 
+    });
+
+    // File must not be larger then some size
+    uploader.filters.push({ 
+        name: 'sizeFilter', 
+        fn: function(item) { 
+            return item.size < 5000000;
+        }
     });
 
     // CALLBACKS
     // Al añadir un archivo ha fallado.
-    uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
-        alert(item.name);
-        console.info('onWhenAddingFileFailed', item, filter, options);
+    uploader.onWhenAddingFileFailed = function(item , filter, options) {
+        var type = '|' + item.name.slice(item.name.lastIndexOf('.') + 1) + '|';
+        var format = ('|jpg|jpge|png|'.indexOf(type) !== -1);
+        var size = (item.size < 5000000);
+
+        if(!format){
+            alert('La extensión del archivo no es valida');
+        }
+
+        if(format && !size){
+            alert('El archivo '+ item.name +' no debe sobre pasar las 5MB');
+        }
     };
     uploader.onAfterAddingFile = function(fileItem) {
         console.info('onAfterAddingFile', fileItem);
@@ -134,6 +105,11 @@ angular.module('load.mainControllers', [])
     };
     uploader.onSuccessItem = function(fileItem, response, status, headers) {
         console.info('onSuccessItem', fileItem, response, status, headers);
+        if(response['success'] === true){ 
+            if(angular.isUndefined(response['attributes'])){
+                console.log('onSuccessItem@content', response['attributes']); 
+            }
+        }
     };
     uploader.onErrorItem = function(fileItem, response, status, headers) {
         console.info('onErrorItem', fileItem, response, status, headers);
@@ -149,8 +125,4 @@ angular.module('load.mainControllers', [])
     };
 
     console.info('uploader', uploader);
-}])
-
-.controller('MapsCtrl', ['$scope', '$location', '$rootScope', '$timeout', function($scope, $location, $rootScope, $timeout){
-    console.info('MapsCtrl');
 }]);

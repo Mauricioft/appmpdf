@@ -17,8 +17,7 @@ Route::get('/', function () {
 }); 
 
 Route::group(array('prefix' => '/api/v1/'), function() {
-	Route::post('gateway/watson/platform',          'MpdfController@doCreate');
-	Route::post('excel/load',  						'ExcelController@doLoad');
+	Route::post('/face/detect',                         'MpdfController@doLoad');
 });
 /*
 |--------------------------------------------------------------------------

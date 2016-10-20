@@ -11,7 +11,7 @@ use Log;
 
 class MpdfController extends Controller{
 
-    public function index(){
+  public function index(){
 
 		$pdf = new PDF('utf-8');
 		$pdf->mirrorMargins(1);
@@ -25,60 +25,43 @@ class MpdfController extends Controller{
 		/*
 		return \View::make('pdf.index');
 		*/
-    }
+  }
 
-	public function doCreate(){ 
+	public function doLoad(Request $request){ 
     try{
         $response = array(
-          'content' => [], 
-          'status' => [], 
+          'attributes' => [],  
           'success' => false,
           'error' => array('code' => '', 'msg' => '')
         );
 
-        $curl = curl_init();
-  
-        $data = array(
-          'url' => "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/6/005/092/3ce/32b77f2.jpg"
-        );
+        $file = $request['phone'];
 
-        $options = array( 
-          CURLOPT_URL => "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses",
-          CURLOPT_POST => TRUE,
-          CURLOPT_HTTPHEADER => array(
-            'Content-Type: application/json',
-            'Ocp-Apim-Subscription-Key: xxxxxxx'
-          ), 
-          CURLOPT_POSTFIELDS => json_encode($data),
-          CURLOPT_RETURNTRANSFER => TRUE
-        );
-
-        // Set request options 
-        curl_setopt_array($curl, $options);
-
-        // Execute request and get response and status code 
-        $info = curl_exec($curl);
-        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
- 
-        curl_close($curl);
-
-        $arrInfo = preg_split("/[\s,]+/", $info);
-        $arrNewInfo = array();
-
-        if(!empty($arrInfo)){
-            foreach ($arrInfo as $row){
-                $linea = explode("=",$row);
-                if(!empty($linea[0]) && !empty($linea[1])){
-                    $arrNewInfo[$linea[0]] = urldecode($linea[1]); 
-                }
-            }
+        if (!file_exists('uploads/files')) {
+          mkdir('uploads/files', 0777, true);
         }
 
-        if($status == 200 AND strpos($arrInfo, 'SUCCESS') === 0){
-          $response['info'] = $arrNewInfo;
-          $response['status'] = $status;
+        // nuevo nombre a la imagen
+        $name = uniqid().'.'.$file->getClientOriginalExtension();
+
+        // ruta de almacenamiento temporal
+        $destinationPath = public_path() . '/uploads/files/';
+
+        $filePath = $destinationPath.$name;
+
+        // mueve la foto al directorio espesificado
+        $uploadSuccess = $file->move($destinationPath, $name);
+
+        if(!empty($uploadSuccess)){
+
+          $getFaceDetect = $this->getFaceDetect($filePath);
+
+          if($getFaceDetect['success']){
+            $response['attributes'] = $getFaceDetect['faceAttributes'];
+          }
         }
- 
+
+        unlink($filePath); // Eliminar el archivo cargado
         $response['success'] = true;
 
     } catch (Exception $e) {
@@ -87,5 +70,63 @@ class MpdfController extends Controller{
     }
 
     return json_encode($response);    
-	}	    
+	}	
+
+
+  private function getFaceDetect($filePath){
+    try{
+      $response = array(
+        'faceAttributes' =>[],
+        'success' => false,
+        'error' => array('code' => '', 'msg' => '')
+      );
+
+      $curl = curl_init();
+  
+      $data = array(
+        'url' => $filePath
+      );
+
+      $options = array( 
+        CURLOPT_URL => "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses",
+        CURLOPT_POST => TRUE,
+        CURLOPT_HTTPHEADER => array(
+          'Content-Type: application/json',
+          'Ocp-Apim-Subscription-Key: 0e75e0c2f4214367a2c76cefaddf0cec'
+        ), 
+        CURLOPT_POSTFIELDS => json_encode($data),
+        CURLOPT_RETURNTRANSFER => TRUE
+      );
+
+      // Set request options 
+      curl_setopt_array($curl, $options);
+
+      // Execute request and get response and status code 
+      $info = curl_exec($curl);
+      $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+      $arrInfo = preg_split("/[\s,]+/", $info);
+      $arrNewInfo = array();
+
+      curl_close($curl);
+
+      if($status == 200 AND strpos($arrInfo, 'SUCCESS') === 0){
+          if(!empty($arrInfo)){
+              foreach ($arrInfo as $row){
+                  $linea = explode("=",$row);
+                  if(!empty($linea[0]) && !empty($linea[1])){
+                      $arrNewInfo[$linea[0]] = urldecode($linea[1]); 
+                  }
+              }
+          }
+        $response['faceAttributes'] = $arrNewInfo;
+        $response['success'] = true;
+      }
+    } catch (Exception $e) {
+        $response['error']['code'] = $e->getCode();
+        $response['error']['msg'] = $e->getMessage();
+    }
+
+    return $response;
+  }    
 }

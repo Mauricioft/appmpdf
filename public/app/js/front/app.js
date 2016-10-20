@@ -17,20 +17,14 @@ app.config(function($stateProvider, $urlRouterProvider, $validatorProvider, $int
   $interpolateProvider.endSymbol('}}');
   // 
   // For any unmatched url, redirect to /state1 
-  $urlRouterProvider.otherwise("/file");
+  $urlRouterProvider.otherwise("/");
   // 
   // Now set up the states 
   $stateProvider  
     .state('file', { 
-      url: "/file",
+      url: "/",
       templateUrl: "app/tpls/front/index.html",
       controller: 'MainCtrl'
-    })
-
-    .state('user', {
-      url: "/user/maps",
-      templateUrl: "app/tpls/front/maps.html",
-      controller: 'MapsCtrl'
     });
 }); 
  
