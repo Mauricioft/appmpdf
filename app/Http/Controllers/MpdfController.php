@@ -36,11 +36,12 @@ class MpdfController extends Controller{
 
         $curl = curl_init();
   
+        $subscriptionKey = '';
 
         $headers = array(
           // Request headers
           'Content-Type' => 'application/json',
-          'Ocp-Apim-Subscription-Key' => '',
+          'Ocp-Apim-Subscription-Key' => $subscriptionKey,
         );
 
         $url = "https://api.projectoxford.ai/face/v1.0/detect";

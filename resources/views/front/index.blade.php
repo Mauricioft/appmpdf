@@ -13,6 +13,34 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
 </head>
 <body>
+	<style>
+		.my-drop-zone { border: dotted 3px lightgray; }
+		.nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+		.another-file-over-class { border: dotted 3px green; }
+		html, body { height: 100%; }
+	</style>
+
+	<div class="navbar navbar-default">
+	    <div class="navbar-header">
+	        <a class="navbar-brand" href="https://github.com/nervgh/angular-file-upload">Angular File Upload</a>
+	    </div>
+	    <div class="navbar-collapse collapse">
+	        <ul class="nav navbar-nav">
+	        	<!--
+	            <li class="active dropdown">
+	                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Demos <b class="caret"></b></a>
+	                <ul class="dropdown-menu">
+	                    <li class="active"><a href="#">Simple example</a></li>
+	                    <li><a href="../image-preview">Uploads only images (with canvas preview)</a></li>
+	                    <li><a href="../without-bootstrap">Without bootstrap example</a></li>
+	                </ul>
+	            </li>
+	            -->
+	            <li><a href="">Google maps</a></li>
+	            <li><a href="https://raw.githubusercontent.com/nervgh/angular-file-upload/master/dist/angular-file-upload.min.js">Download</a></li>
+	        </ul>
+	    </div>
+	</div>
 	<div class="container">
 		<div ui-view></div>
 	</div>

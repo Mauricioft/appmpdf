@@ -149,4 +149,8 @@ angular.module('load.mainControllers', [])
     };
 
     console.info('uploader', uploader);
+}])
+
+.controller('MapsCtrl', ['$scope', '$location', '$rootScope', '$timeout', function($scope, $location, $rootScope, $timeout){
+    console.info('MapsCtrl');
 }]);

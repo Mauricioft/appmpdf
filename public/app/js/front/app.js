@@ -10,12 +10,37 @@ var app = angular.module('app', [
   'load.mainServices'
 ]);
 
-app.config(function($stateProvider, $urlRouterProvider, $validatorProvider) {
+app.config(function($stateProvider, $urlRouterProvider, $validatorProvider, $interpolateProvider) {
+  //
+  // Angular Tags
+  $interpolateProvider.startSymbol('{{');
+  $interpolateProvider.endSymbol('}}');
   // 
   // For any unmatched url, redirect to /state1 
   $urlRouterProvider.otherwise("/");
+  // 
+  // Now set up the states 
+  $stateProvider  
+    .state('file', { 
+      url: "/file",
+      templateUrl: "app/tpls/front/index.html",
+      controller: 'MainCtrl'
+    })
 
-  console.info('app@validatorProvider', $validatorProvider);
+    .state('user', {
+      url: "/user/maps",
+      templateUrl: "app/tpls/front/maps.html",
+      controller: 'MapsCtrl'
+    });
+}); 
+ 
+app.config(["$httpProvider", "$validatorProvider", function($httpProvider, $validatorProvider) {
+  
+  var csrfToken = $('meta[name=csrf-token]').attr('content');
+  $httpProvider.defaults.headers.common['X-CSRF-Token'] = csrfToken;
+  $httpProvider.defaults.headers.post['X-CSRF-Token'] = csrfToken;
+  $httpProvider.defaults.headers.put['X-CSRF-Token'] = csrfToken;
+  $httpProvider.defaults.headers.patch['X-CSRF-Token'] = csrfToken;
 
   $validatorProvider.setDefaults({
     debug: true,
@@ -42,41 +67,4 @@ app.config(function($stateProvider, $urlRouterProvider, $validatorProvider) {
     max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
     min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
   });
-  /*
-  $validatorProvider.setDefaultMessages({
-    required: "This field is required.",
-    remote: "Please fix this field.",
-    email: "Please enter a valid email address.",
-    url: "Please enter a valid URL.",
-    date: "Please enter a valid date.",
-    dateISO: "Please enter a valid date (ISO).",
-    number: "Please enter a valid number.",
-    digits: "Please enter only digits.",
-    creditcard: "Please enter a valid credit card number.",
-    equalTo: "Please enter the same value again.",
-    accept: "Please enter a value with a valid extension.",
-    maxlength: $validatorProvider.format("Please enter no more than {0} characters."),
-    minlength: $validatorProvider.format("Please enter at least {0} characters."),
-    rangelength: $validatorProvider.format("Please enter a value between {0} and {1} characters long."),
-    range: $validatorProvider.format("Please enter a value between {0} and {1}."),
-    max: $validatorProvider.format("Please enter a value less than or equal to {0}."),
-    min: $validatorProvider.format("Please enter a value greater than or equal to {0}.")
-  });
-  */
-  // 
-  // Now set up the states 
-  $stateProvider
-    .state('app', {
-      url: "/",
-      templateUrl: "app/tpls/front/index.html",
-      controller: 'MainCtrl'
-    });
-}); 
- 
-/*app.config(["$httpProvider", function($httpProvider) {
-  var csrfToken = $('meta[name=csrf-token]').attr('content');
-  $httpProvider.defaults.headers.common['X-CSRF-Token'] = csrfToken;
-  $httpProvider.defaults.headers.post['X-CSRF-Token'] = csrfToken;
-  $httpProvider.defaults.headers.put['X-CSRF-Token'] = csrfToken;
-  $httpProvider.defaults.headers.patch['X-CSRF-Token'] = csrfToken;
-}]);*/
+}]);
