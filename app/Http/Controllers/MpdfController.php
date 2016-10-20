@@ -74,8 +74,8 @@ class MpdfController extends Controller{
 
         // Execute request and get response and status code 
         $content = curl_exec($curl);
-        $err = curl_errno($ch); 
-        $errmsg = curl_error($ch) ;
+        $err = curl_errno($curl); 
+        $errmsg = curl_error($curl) ;
         $statusConnetion  = curl_getinfo($curl, CURLINFO_HTTP_CODE);
  
         curl_close($curl);
