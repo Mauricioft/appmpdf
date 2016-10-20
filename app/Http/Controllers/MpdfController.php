@@ -45,13 +45,13 @@ class MpdfController extends Controller{
           'Ocp-Apim-Subscription-Key' => 'd08a5f2639ce460e8acb7854c493acfb'
         );
 
-        $url = "https://api.projectoxford.ai/face/v1.0/detect";
-        $imageUrl = "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/6/005/092/3ce/32b77f2.jpg";
-        $post = [
-          'returnFaceId' => true,
-          'returnFaceLandmarks' => true,
-          'returnFaceAttributes' => 'age,gender,headPose,smile,facialHair,glasses',
-        ];
+        $url = "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses";
+        
+        $data = array(
+          'url' => "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/6/005/092/3ce/32b77f2.jpg"
+        );
+
+        $data_string = json_encode($data);
 
         // Set request options 
         curl_setopt_array($curl, array( 
@@ -59,7 +59,7 @@ class MpdfController extends Controller{
           CURLOPT_POST => TRUE,
           CURLOPT_HTTPHEADER => $headers,
           CURLOPT_ENCODING => "UTF-8",
-          CURLOPT_POSTFIELDS => $post,
+          CURLOPT_POSTFIELDS => $data_string,
           CURLOPT_RETURNTRANSFER => TRUE
         ));
 
