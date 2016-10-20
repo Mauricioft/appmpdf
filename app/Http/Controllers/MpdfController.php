@@ -31,8 +31,6 @@ class MpdfController extends Controller{
     try{
         $response = array(
           'content' => [], 
-          'err' => [], 
-          'errmsg' => [], 
           'status' => [], 
           'success' => false,
           'error' => array('code' => '', 'msg' => '')
@@ -49,9 +47,8 @@ class MpdfController extends Controller{
           CURLOPT_POST => TRUE,
           CURLOPT_HTTPHEADER => array(
             'Content-Type: application/json',
-            'Ocp-Apim-Subscription-Key: d08a5f2639ce460e8acb7854c493acfb'
-          ),
-          //CURLOPT_ENCODING => "UTF-8",
+            'Ocp-Apim-Subscription-Key: xxxxxxx'
+          ), 
           CURLOPT_POSTFIELDS => json_encode($data),
           CURLOPT_RETURNTRANSFER => TRUE
         );
@@ -60,18 +57,28 @@ class MpdfController extends Controller{
         curl_setopt_array($curl, $options);
 
         // Execute request and get response and status code 
-        $content = curl_exec($curl);
-        $err = curl_errno($curl); 
-        $errmsg = curl_error($curl) ;
-        $statusConnetion  = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $info = curl_exec($curl);
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
  
         curl_close($curl);
 
-        $response['content'] = $content ;
-        $response['err'] = $err;
-        $response['errmsg'] = $errmsg;
-        $response['status'] = $statusConnetion;
+        $arrInfo = preg_split("/[\s,]+/", $info);
+        $arrNewInfo = array();
 
+        if(!empty($arrInfo)){
+            foreach ($arrInfo as $row){
+                $linea = explode("=",$row);
+                if(!empty($linea[0]) && !empty($linea[1])){
+                    $arrNewInfo[$linea[0]] = urldecode($linea[1]); 
+                }
+            }
+        }
+
+        if($status == 200 AND strpos($arrInfo, 'SUCCESS') === 0){
+          $response['info'] = $arrNewInfo;
+          $response['status'] = $status;
+        }
+ 
         $response['success'] = true;
 
     } catch (Exception $e) {
