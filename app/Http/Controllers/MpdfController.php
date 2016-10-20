@@ -92,7 +92,7 @@ class MpdfController extends Controller{
         CURLOPT_POST => TRUE,
         CURLOPT_HTTPHEADER => array(
           'Content-Type: application/json',
-          'Ocp-Apim-Subscription-Key: 0e75e0c2f4214367a2c76cefaddf0cec'
+          'Ocp-Apim-Subscription-Key: xxxx'
         ), 
         CURLOPT_POSTFIELDS => json_encode($data),
         CURLOPT_RETURNTRANSFER => TRUE
