@@ -30,26 +30,47 @@ class MpdfController extends Controller{
 	public function doCreate(){ 
     try{
         $response = array(
-          'content' => [],  
+          'content' => [], 
+          'err' => [], 
+          'errmsg' => [], 
+          'status' => [], 
           'success' => false,
           'error' => array('code' => '', 'msg' => '')
         );
 
-        $client = new \GuzzleHttp\Client();
+        $curl = curl_init();
+  
+        $data = array(
+          'url' => "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/6/005/092/3ce/32b77f2.jpg"
+        );
 
-        $response = $client->request('POST', "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses", [
-          // un array con la data de los headers como tipo de peticion, etc.
-          'headers' => [
-            'Content-Type' => 'application/json',
-            'Ocp-Apim-Subscription-Key' => 'd08a5f2639ce460e8acb7854c493acfb'
-          ],
-          // array de datos del formulario
-          'json' => [
-            'url' => "https://media.licdn.com/mpr/mpr/shrinknp_200_200/p/6/005/092/3ce/32b77f2.jpg"
-          ]
-        ]);  
+        $options = array( 
+          CURLOPT_URL => "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses",
+          CURLOPT_POST => TRUE,
+          CURLOPT_HTTPHEADER => array(
+            'Content-Type: application/json',
+            'Ocp-Apim-Subscription-Key: d08a5f2639ce460e8acb7854c493acfb'
+          ),
+          //CURLOPT_ENCODING => "UTF-8",
+          CURLOPT_POSTFIELDS => json_encode($data),
+          CURLOPT_RETURNTRANSFER => TRUE
+        );
 
-        $response['content'] = $response;
+        // Set request options 
+        curl_setopt_array($curl, $options);
+
+        // Execute request and get response and status code 
+        $content = curl_exec($curl);
+        $err = curl_errno($curl); 
+        $errmsg = curl_error($curl) ;
+        $statusConnetion  = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+ 
+        curl_close($curl);
+
+        $response['content'] = $content ;
+        $response['err'] = $err;
+        $response['errmsg'] = $errmsg;
+        $response['status'] = $statusConnetion;
 
         $response['success'] = true;
 
