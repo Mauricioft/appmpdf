@@ -30,8 +30,7 @@ class MpdfController extends Controller{
 	public function doCreate(){ 
     try{
         $response = array(
-          'face' => [],
-          'facetes' => [],
+          'face' => [], 
           'success' => false,
           'error' => array('code' => '', 'msg' => '')
         );
@@ -43,7 +42,7 @@ class MpdfController extends Controller{
         $headers = array(
           // Request headers
           'Content-Type' => 'application/json',
-          'Ocp-Apim-Subscription-Key' => $face_api_key,
+          'Ocp-Apim-Subscription-Key' => 'd08a5f2639ce460e8acb7854c493acfb'
         );
 
         $url = "https://api.projectoxford.ai/face/v1.0/detect";
@@ -64,8 +63,7 @@ class MpdfController extends Controller{
           CURLOPT_RETURNTRANSFER => TRUE
         ));
 
-        // Execute request and get response and status code
-        $response['facetes'] = $curl;
+        // Execute request and get response and status code 
         $responsePaypal = curl_exec($curl);
         $statusConnetion  = curl_getinfo($curl, CURLINFO_HTTP_CODE);
  
