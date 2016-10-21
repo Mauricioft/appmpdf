@@ -52,12 +52,15 @@ class MpdfController extends Controller{
 
         // mueve la foto al directorio espesificado
         $uploadSuccess = $file->move($destinationPath, $name);
+        echo "<pre>";
+        print_r($filePath);
+        echo "</pre>";
 
         if(!empty($uploadSuccess)){
 
           $getFaceDetect = $this->getFaceDetect($filePath);
           
-          
+
           if($getFaceDetect['success']){
             $response['attributes'] = $getFaceDetect['faceAttributes'];
           }
@@ -85,6 +88,7 @@ class MpdfController extends Controller{
 
       $curl = curl_init();
       
+      
       $data = array(
         'url' => $filePath
       );
@@ -110,9 +114,6 @@ class MpdfController extends Controller{
 
       $arrInfo = preg_split("/[\s,]+/", $info);
       $arrNewInfo = array();
-      echo "<pre>";
-      print_r($arrInfo);
-      echo "</pre>";
 
       curl_close($curl);
 
