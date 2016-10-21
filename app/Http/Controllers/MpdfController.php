@@ -37,37 +37,31 @@ class MpdfController extends Controller{
 
         
         $file = $request['phone'];
-        
+
         if (!file_exists('uploads/files')) {
           mkdir('uploads/files', 0777, true);
         }
 
         // nuevo nombre a la imagen
         $name = uniqid().'.'.$file->getClientOriginalExtension();
-
+        
         // ruta de almacenamiento temporal
-        // https://appmpdf.herokuapp.com/uploads/files/580a1e0820887.jpg
-        $destinationPath = 'https://appmpdf.herokuapp.com/uploads/files/';
-
-        $filePath = $destinationPath.$name;
+        $destinationPath = public_path().'/uploads/files/';
 
         // mueve la foto al directorio espesificado
         $uploadSuccess = $file->move($destinationPath, $name);
-        echo "<pre>";
-        print_r($filePath);
-        echo "</pre>";
 
+        // http://mauricio-io.gfourmis.com/uploads/files/580a653d98ce2.jpg
+        $filePath = 'http://'.$_SERVER['SERVER_NAME'].'/uploads/files/'.$name;
+        
         if(!empty($uploadSuccess)){
 
           $getFaceDetect = $this->getFaceDetect($filePath);
-          
 
           if($getFaceDetect['success']){
             $response['attributes'] = $getFaceDetect['faceAttributes'];
           }
-        }
-
-        unlink($filePath); // Eliminar el archivo cargado
+        }  
         $response['success'] = true;
 
     } catch (Exception $e) {
@@ -88,19 +82,17 @@ class MpdfController extends Controller{
       );
 
       $curl = curl_init();
-      
-      
+
       $data = array(
         'url' => $filePath
       );
-
 
       $options = array( 
         CURLOPT_URL => "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses",
         CURLOPT_POST => TRUE,
         CURLOPT_HTTPHEADER => array(
           'Content-Type: application/json',
-          'Ocp-Apim-Subscription-Key: 89604415004b4035bd4ccf5f317e5b68'
+          'Ocp-Apim-Subscription-Key: 355fcd3cdee141bcb1a09ff820166f0b'
         ), 
         CURLOPT_POSTFIELDS => json_encode($data),
         CURLOPT_RETURNTRANSFER => TRUE
@@ -112,24 +104,15 @@ class MpdfController extends Controller{
       // Execute request and get response and status code 
       $info = curl_exec($curl);
       $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-      $arrInfo = preg_split("/[\s,]+/", $info);
-      $arrNewInfo = array();
-
-      curl_close($curl);
-
-      if($status == 200 AND strpos($arrInfo, 'SUCCESS') === 0){
-          if(!empty($arrInfo)){
-              foreach ($arrInfo as $row){
-                  $linea = explode("=",$row);
-                  if(!empty($linea[0]) && !empty($linea[1])){
-                      $arrNewInfo[$linea[0]] = urldecode($linea[1]); 
-                  }
-              }
-          }
-        $response['faceAttributes'] = $arrNewInfo;
-        $response['success'] = true;
-      }
+      
+      curl_close($curl);// cerrar curl 
+      /*
+      echo "<pre>";
+      print_r($info);
+      echo "</pre>";
+      */
+      $response['faceAttributes'] = json_decode($info);
+      $response['success'] = true;   
     } catch (Exception $e) {
         $response['error']['code'] = $e->getCode();
         $response['error']['msg'] = $e->getMessage();

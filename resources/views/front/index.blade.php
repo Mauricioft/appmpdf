@@ -56,6 +56,7 @@
 	<script src="../app/js/front/node_modules/angular-file-upload/dist/angular-file-upload.min.js"></script>
 	<script src="../app/js/front/node_modules/angular-ui-validate/dist/validate.min.js"></script>
 	<script src="../app/js/front/node_modules/angular-form-validate/dist/angular-validate.min.js"></script>
+	<script src="../app/js/front/node_modules/bootstrap-filestyle.js"></script>
 	<!-- Angular Component-->
 	<script src="../app/js/front/app.js"></script>
 	<script src="../app/js/front/controllers/mainControllers.js"></script>

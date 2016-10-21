@@ -140,13 +140,18 @@ angular.module('load.mainControllers', [])
 
     $scope.image = [];
 
-    $scope.uploadImage = function(){
-        var file = $scope.image;
+    $scope.uploadImage = function(file){
+        $("#results").append();
         MainSrvc.uploadImage(file).then(function(response){
             console.log('uploadImage@response', response);
+            writeToDom(JSON.stringify(response['attributes'][0], null, 4));
         }).catch(function(err){
             // Tratar el error
             console.log('uploadImage@err', err);
         });  
     }
+
+    function writeToDom(content) {
+        $("#results").append("<pre>" + content + "</pre>");
+    } 
 }]);
