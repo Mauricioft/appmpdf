@@ -46,7 +46,8 @@ class MpdfController extends Controller{
         $name = uniqid().'.'.$file->getClientOriginalExtension();
 
         // ruta de almacenamiento temporal
-        $destinationPath = URL::to('/').'/uploads/files/';
+        // https://appmpdf.herokuapp.com/uploads/files/580a1e0820887.jpg
+        $destinationPath = 'https://appmpdf.herokuapp.com/uploads/files/';
 
         $filePath = $destinationPath.$name;
 
