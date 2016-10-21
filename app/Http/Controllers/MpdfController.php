@@ -46,7 +46,7 @@ class MpdfController extends Controller{
         $name = uniqid().'.'.$file->getClientOriginalExtension();
 
         // ruta de almacenamiento temporal
-        $destinationPath = public_path() . '/uploads/files/';
+        $destinationPath = URL::to('/') . '/uploads/files/';
 
         $filePath = $destinationPath.$name;
 
