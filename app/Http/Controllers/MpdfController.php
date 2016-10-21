@@ -56,9 +56,7 @@ class MpdfController extends Controller{
         if(!empty($uploadSuccess)){
 
           $getFaceDetect = $this->getFaceDetect($filePath);
-          echo "<pre>";
-          print_r($getFaceDetect);
-          echo "</pre>";
+          
           
           if($getFaceDetect['success']){
             $response['attributes'] = $getFaceDetect['faceAttributes'];
@@ -112,7 +110,9 @@ class MpdfController extends Controller{
 
       $arrInfo = preg_split("/[\s,]+/", $info);
       $arrNewInfo = array();
-
+      echo "<pre>";
+      print_r($arrInfo);
+      echo "</pre>";
 
       curl_close($curl);
 
