@@ -9,8 +9,9 @@ angular.module('load.mainServices', [])
 			var promise = defered.promise;
 	  		var fd = new FormData();
         	fd.append('phone', file);
-        	
-	      	$http.post('https://appmpdf.herokuapp.com/api/v1/'+'face/detect', fd, {
+
+	      	// $http.post('https://appmpdf.herokuapp.com/api/v1/'+'face/detect', fd, {
+	      	$http.post('http://dev.mpdf.com/api/v1/'+'face/detect', fd, {
 	      		transformRequest: angular.identity, 
                 headers: {
                     'Content-Type': undefined

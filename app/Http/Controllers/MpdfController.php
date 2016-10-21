@@ -35,6 +35,7 @@ class MpdfController extends Controller{
           'error' => array('code' => '', 'msg' => '')
         );
 
+        
         $file = $request['phone'];
         
         if (!file_exists('uploads/files')) {
@@ -55,7 +56,10 @@ class MpdfController extends Controller{
         if(!empty($uploadSuccess)){
 
           $getFaceDetect = $this->getFaceDetect($filePath);
-
+          echo "<pre>";
+          print_r($getFaceDetect);
+          echo "</pre>";
+          
           if($getFaceDetect['success']){
             $response['attributes'] = $getFaceDetect['faceAttributes'];
           }
@@ -70,7 +74,7 @@ class MpdfController extends Controller{
     }
 
     return json_encode($response);    
-	}	
+  } 
 
 
   private function getFaceDetect($filePath){
@@ -82,10 +86,11 @@ class MpdfController extends Controller{
       );
 
       $curl = curl_init();
-  
+      
       $data = array(
         'url' => $filePath
       );
+
 
       $options = array( 
         CURLOPT_URL => "https://api.projectoxford.ai/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&returnFaceAttributes=age,gender,headPose,smile,facialHair,glasses",
@@ -107,6 +112,7 @@ class MpdfController extends Controller{
 
       $arrInfo = preg_split("/[\s,]+/", $info);
       $arrNewInfo = array();
+
 
       curl_close($curl);
 
