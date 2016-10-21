@@ -44,7 +44,7 @@ angular.module('load.mainControllers', [])
     console.log('csrf_token', csrf_token);
 
     var uploader = $scope.uploader = new FileUploader({
-        url: 'https://appmpdf.herokuapp.com/api/v1/face/detect',
+        url: 'http://dev.appmpdf.com/api/v1/face/detect',
         alias: 'phone', // {String} ​​: Nombre del campo que contendrá el archivo, por defecto esfile
         autoUpload: false, // {Boolean} : cargar automáticamente archivos después de añadirlos a la cola
         removeAfterUpload: false, // {Boolean} : permiten CORS. Sólo los navegadores HTML5.
@@ -52,6 +52,7 @@ angular.module('load.mainControllers', [])
         isHTML5: true, // {Boolean} : true si es cargador html5-Registro. Solo lectura.
         headers : {
             'X-CSRF-TOKEN': csrf_token, // X-CSRF-TOKEN is used for Ruby on Rails Tokens
+            'Content-Type': undefined
         }
     });
 
@@ -59,8 +60,8 @@ angular.module('load.mainControllers', [])
     uploader.filters.push({ 
         name: 'imageFilter',
         fn: function(item, options) {
-            var type = '|' + item.name.slice(item.name.lastIndexOf('.') + 1) + '|';
-            return '|jpg|jpge|png|'.indexOf(type) !== -1;
+            var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+            return '|jpg|png|jpeg|'.indexOf(type) !== -1;
         } 
     });
 
@@ -75,7 +76,7 @@ angular.module('load.mainControllers', [])
     // CALLBACKS
     // Al añadir un archivo ha fallado.
     uploader.onWhenAddingFileFailed = function(item , filter, options) {
-        var type = '|' + item.name.slice(item.name.lastIndexOf('.') + 1) + '|';
+        var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
         var format = ('|jpg|jpge|png|'.indexOf(type) !== -1);
         var size = (item.size < 5000000);
 
@@ -136,4 +137,13 @@ angular.module('load.mainControllers', [])
     }
 
     console.info('uploader', uploader);
+
+    $scope.image = [];
+
+    $scope.uploadImage = function(){
+        var file = $scope.image;
+        MainSrvc.uploadImage(file).then(function(response){
+            console.log('uploadImage@response', response);
+        });    
+    }
 }]);

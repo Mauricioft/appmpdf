@@ -7,7 +7,8 @@ var app = angular.module('app', [
   'ngValidate',
   'angularFileUpload',
   'load.mainControllers',
-  'load.mainServices'
+  'load.mainServices',
+  'uploadDirective'
 ]);
 
 app.config(function($stateProvider, $urlRouterProvider, $validatorProvider, $interpolateProvider) {

@@ -36,7 +36,7 @@ class MpdfController extends Controller{
         );
 
         $file = $request['phone'];
-
+        
         if (!file_exists('uploads/files')) {
           mkdir('uploads/files', 0777, true);
         }

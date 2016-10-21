@@ -60,5 +60,6 @@
 	<script src="../app/js/front/app.js"></script>
 	<script src="../app/js/front/controllers/mainControllers.js"></script>
 	<script src="../app/js/front/services/mainServices.js"></script>
+	<script src="../app/js/front/directives/uploadImageDirective.js"></script>
 </body>
 </html>
