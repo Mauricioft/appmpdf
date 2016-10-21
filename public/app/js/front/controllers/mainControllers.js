@@ -144,6 +144,9 @@ angular.module('load.mainControllers', [])
         var file = $scope.image;
         MainSrvc.uploadImage(file).then(function(response){
             console.log('uploadImage@response', response);
-        });    
+        }).catch(function(err)) {
+            // Tratar el error
+            console.log('uploadImage@err', err);
+        }   
     }
 }]);
